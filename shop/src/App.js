@@ -6,10 +6,13 @@ import './App.css';
 import Data from './data.js';
 import { Link, Route, Switch } from 'react-router-dom';
 import Detail from './Detail.js';
+import axios from 'axios';
 
 function App() {
   
   let [shoes, change_shoes] = useState(Data);
+  let [loading, change_loading] = useState(false);
+  let [stock, change_stock] = useState([10,11,12]);
 
   return (
     <div className="App">
@@ -65,15 +68,35 @@ function App() {
                   return <Card shoes={a} i={i} key={i} />
                 })
               }
-            </div>
-          </div>      
+            </div>            
+          </div>
+          <button className="btn btn-primary" onClick={()=>{
+
+            //loading ui 띄우기
+            
+
+            axios.get('https://codingapple1.github.io/shop/data2.json')
+            .then((result)=>{
+              
+              //loading ui 지우기
+              
+              change_shoes([...shoes, ...result.data])
+            })
+            .catch(()=>{ 
+
+              //loading ui 지우기              
+
+              console.log('실패~')
+            })
+
+          }}>더보기</button>              
         </Route>
 
         <Route path="/detail/:id">
-          <Detail shoes={shoes}/>
+          <Detail shoes={shoes} stock={stock} change_stock={change_stock}/>
         </Route>
 
-      </Switch>    
+      </Switch>
     </div>
   );  
 }
